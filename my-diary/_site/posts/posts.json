@@ -1,0 +1,19 @@
+[
+  {
+    "path": "posts/2022-02-07-my-first-post/",
+    "title": "My first post",
+    "description": "A short description of the post.",
+    "author": [
+      {
+        "name": "Emmanuel Ugochukwu",
+        "url": "https://github.com/emmanuelugo"
+      }
+    ],
+    "date": "2022-02-07",
+    "categories": [],
+    "contents": "\r\n\r\n\r\nlibrary(tidyverse)\r\nmtcars %>% \r\n  ggplot(aes(mpg, disp)) +\r\n  geom_point()\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "preview": "posts/2022-02-07-my-first-post/my-first-post_files/figure-html5/unnamed-chunk-1-1.png",
+    "last_modified": "2022-02-08T00:13:10+01:00",
+    "input_file": {}
+  }
+]

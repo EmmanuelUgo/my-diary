@@ -1,0 +1,18 @@
+name: "my-diary"
+title: "Diary of an Analyst"
+favicon: images/favicon.ico
+description: |
+  Diary of an Analyst
+output_dir: "_site"
+navbar:
+  right:
+    - text: "Home"
+      href: about.html
+      icon: fa-home
+    - text: "Blog"
+      href: index.html
+    - href: index.xml
+      icon: fa-rss
+output:
+  distill::distill_article:
+    css: styles.css

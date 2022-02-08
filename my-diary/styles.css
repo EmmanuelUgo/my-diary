@@ -1,0 +1,93 @@
+
+/* Import fonts from Google's API */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis&display=swap');
+
+.distill-site-header .logo img{
+  max-height: 30px; /* Makes logo bigger, default was 20px */
+}
+
+
+.distill-site-header{ 
+  padding: 20px 0px;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255,255,255,0.5));   
+  background-color: transparent;
+  font-size: 15px;
+  font-family: 'Dosis', sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.distill-site-nav {
+  color: #2F2D2E;
+  background-color: transparent;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.distill-site-nav a:hover {
+  color: #211103;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown {
+    display: none;
+  }
+  
+  .distill-site-header a.title, .distill-site-header a.nav-toggle {
+    display: inline-block;
+    padding: 10px 0px;
+    margin: 10px 14px; 
+  }
+}
+
+
+/* Change appearance of headers */
+h1, h2, h3, h4, h5 {
+  font-family: 'Quicksand', sans-serif;
+  color: #383838;
+}
+
+
+
+/* Use specific font in the body of the text */
+html, body, p {
+  
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 200;
+  line-height: 1.3; 
+  font-size: 1.0em;
+  color: #424242;
+  font-style: normal;
+  
+}
+
+
+/* Change the appearance of in-line code chunks */
+code {
+  font-family: 'Dosis', sans-serif;
+  font-weight: 400; 
+  font-size: 0.9em;
+}
+
+
+d-code {
+  background: grey;
+}
+
+d-appendix {
+  background-color: #f7f7f7;
+  border-top: none !important;
+}
+
+.distill-site-footer {
+  color: white;
+  font-family: 'Dosis', sans-serif;
+  background-color: #A5AE9E;
+  margin-top: 0px;
+  padding: 20px 10px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 12px;
+}

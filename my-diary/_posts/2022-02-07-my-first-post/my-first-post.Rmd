@@ -1,0 +1,27 @@
+---
+title: "My first post"
+description: |
+  A short description of the post.
+author:
+  - name: Emmanuel Ugochukwu
+    url: https://github.com/emmanuelugo
+date: 02-07-2022
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r echo=TRUE}
+library(tidyverse)
+mtcars %>% 
+  ggplot(aes(mpg, disp)) +
+  geom_point()
+```
+
+

@@ -1,0 +1,32 @@
+---
+title: "About Me!"
+image: "images/dp.jfif"
+links:
+  - label: LinkedIn
+    url: "https://www.linkedin.com/in/emmanuel-u-6a5971108/"
+  - label: Twitter
+    url: "https://twitter.com/emm_aguila"
+  - label: GitHub
+    url: "https://github.com/emmanuelugo"
+  - label: Linktree
+    url: "https://linktr.ee/haanuel"
+  - label: Resume
+    url: 'https://drive.google.com/file/d/1uofqJWm66b3Row1MRFGQl5_Xq7WxT8fL/view?usp=sharing'
+site: distill::distill_website
+output:
+  postcards::trestles
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Hey there! Thanks for stopping by.
+
+I'm Emmanuel 🇳🇬, an engineering 👨‍🎓 and a data nerd 🤓. I'm creating this blog site to record my progress in the Data Science space and also improve my writing and communication skills. During my free time, i pick up language learning. I self studied Spanish to conversational fluency and i am doing the same in German. My goal is to speak about 10 languages in my lifetime 😅
+
+Currently, I'm quite proficient in using the R programming language to perform some Data Analytics task. This blog was done and is managed in R. I'm also good with SQL ,Python, and Tableau. Before the end of the year, I plan to acquire some extra skills like dbt, BigQuery, e.t.c and to also get better at my current skills.
+
+I'll also be working on some personal projects and documenting my progress here.
+
+I hope my posts would help someone out there.
