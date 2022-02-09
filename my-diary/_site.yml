@@ -3,16 +3,25 @@ title: "Diary of an Analyst"
 favicon: images/favicon.ico
 description: |
   Diary of an Analyst
+base_url: https://dairy-of-an-analyst.netlify.app/
 output_dir: "_site"
 navbar:
   right:
     - text: "Home"
-      href: about.html
-      icon: fa-home
-    - text: "Blog"
       href: index.html
+      icon: fa-home
+    - text: "About Me"
+      href: about.html
     - href: index.xml
       icon: fa-rss
+collections:
+  posts:
+    share: [twitter, linkedin]
+twitter:
+  site: "@emm_aguila"
+  creator: "@emm_aguila"
 output:
   distill::distill_article:
     css: styles.css
+rss:
+  full_content: false
