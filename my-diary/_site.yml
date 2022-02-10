@@ -1,6 +1,5 @@
 name: "my-diary"
 title: "Diary of an Analyst"
-favicon: images/favicon.ico
 description: |
   Diary of an Analyst
 base_url: https://dairy-of-an-analyst.netlify.app/
@@ -9,7 +8,6 @@ navbar:
   right:
     - text: "Home"
       href: index.html
-      icon: fa-home
     - text: "About Me"
       href: about.html
     - href: index.xml
