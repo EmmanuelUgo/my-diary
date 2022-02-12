@@ -1,0 +1,135 @@
+---
+title: "Vroom vs Readr"
+description: |
+  A faster way to load data in R
+author:
+  - name: Emmanuel Ugochukwu
+    url: https://github.com/emmanuelugo
+date: 02-10-2022
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 4
+twitter:
+  site: "@emm_aguila"
+  creator: "@emm_aguila"
+categories:
+  - R Packages
+  - readr
+  - vroom
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, tidy = "styler", out.width = '100%')
+```
+
+The [`{vroom}`](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/) package has been out for a while now and in this post, we will be comparing it to the [`{readr}`](https://readr.tidyverse.org/) package. Both packages are used to load data in R. Today, we'll be looking at the time it takes `vroom()` from the `vroom` package to load data and comparing it to the `read_csv()` function from the `{readr}` package. The `{readr}` package is part of the [`{tidyverse}`](https://tidyverse.org/) ecosystem.
+
+Who knows, you might learn something from my codes 🤪
+
+### Loading Libraries
+
+```{r}
+library(vroom)
+library(tidyverse)
+library(ggimage)
+library(ggtext)
+library(showtext)
+
+
+font_add_google(name = "quicksand",  family = "quicksand")
+```
+
+```{r include=FALSE}
+paths <- "C:/Users/Admin/Desktop/Final JedCo Data/new_df.csv"
+```
+
+### Creating a tracking function
+
+This function takes a single argument, path (location to the file on your PC) and records the time it took to load that file using the vroom() and read_csv() function and return a tibble of results with the size of the data.
+
+```{r}
+get_time_diff <- function(path){
+  ## For Vroom
+  start_vroom = Sys.time()
+  
+  vroom_data <- vroom(path, show_col_types = FALSE)
+  
+  end_vroom = Sys.time()
+  
+  result_vroom = end_vroom - start_vroom
+  
+  ## For readR
+  start_readr = Sys.time()
+  
+  readr_data <- read_csv(path)
+  
+  end_readr = Sys.time()
+  
+  result_readr = end_readr - start_readr
+  
+  final_table = tribble(
+    ~vroom , ~readr, ~size,
+    ##########################
+    result_vroom, result_readr, format(object.size(vroom_data), units = "Gb")
+  )
+  
+  return(final_table)
+}
+```
+
+```{r}
+results <- get_time_diff(paths) %>%
+  select(size,readr,vroom) %>% 
+  mutate_at(c("readr","vroom"), as.numeric)
+```
+
+```{r echo=FALSE}
+results %>% 
+  gt::gt(rownames_to_stub = TRUE) %>% 
+  gt::fmt_number(columns = c(readr,vroom),
+                 decimals = 2,
+                 pattern = "{x} Sec")
+  
+```
+
+### Visualization
+
+```{r}
+results <- results %>% 
+  pivot_longer(cols = c(vroom,readr))
+
+sticker_pos <- tibble(x = c("vroom","readr"),
+                      y = c(results$value[1] / 2, results$value[2] / 2),
+                      sticker = c("vroom.png","readr.png"))
+
+```
+
+```{r}
+
+ggplot() +
+  geom_col(data = results, aes(name,value)) +
+  geom_hline(yintercept = results$value[2]/2, lty = 2) +
+  geom_image(data = sticker_pos, aes(x,y,image = sticker), size = 0.15) +
+  
+  annotate(geom = "text", x = "vroom", y = (results$value[2]/2) + 2, label = "Half time mark for readr") +
+  expand_limits(y = c(0, 50)) +
+  labs(
+    title = "**{vroom}** vs **{readr}**",
+    subtitle = "Comparing the time it takes to load a data size of 1.4Gb",
+    y = "Time (Sec)",
+    x = NULL) +
+  theme_minimal() +
+  theme(text = element_text(family = "quicksand"),
+        plot.title = element_markdown())
+  
+
+```
+
+### Conclusion
+
+From the plot above, the `vroom` package did way better than the `readr` package, reading a 1.4Gb csv file far lower than half the time it took `readr` to load. The vroom package is an excellent way to load large data sizes in R.
+
+Now you know a new and fast way to load data in R.
+
+❤️
