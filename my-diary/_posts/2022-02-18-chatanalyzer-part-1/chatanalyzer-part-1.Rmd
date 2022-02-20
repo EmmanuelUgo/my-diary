@@ -1,0 +1,289 @@
+---
+title: "Building a Chat Analyzer app - Part 2"
+description: |
+  Creating some descriptive information about our data
+author:
+  - name: Emmanuel Ugochukwu
+    url: https://github.com/emmanuelugo
+base_url: https://dairy-of-an-analyst.netlify.app/
+date: 02-18-2022
+preview: preview.png
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 4
+twitter:
+  site: "@emm_aguila"
+  creator: "@emm_aguila"
+categories:
+  - Text Analytics
+  - Data Science
+  - WhatsApp series
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, tidy = "styler", out.width = '100%')
+```
+
+Hello and welcome back.
+
+In this post, I go over some of the logic that went on the first page of the WhatsApp chat analyzer. From my previous post, this section was categorized under **Chat Summary Feature.** This post will cover the cards section. Most of the analysis conducted here would eventually be converted to functions so that we don't have a lot of code in the shiny server.
+
+Let's dig in!
+
+## Loading Libraries and Data
+
+For demonstration purposes, I'll be using a group chat data. It's a small group chat where some of my good friends in school and I talk about things. I have already exported the data to my PC so I'd just load the necessary libraries and data and do some basic filtering and data transformations.
+
+```{r}
+
+library(tidyverse) ## Modern Data science library in R
+library(rwhatsapp) ## Smart way to load whatsapp data in R
+
+chat_data <- rwa_read("Chat de WhatsApp con The Peng Geng.txt") %>% 
+  filter(!is.na(author), !text %in% c("Se eliminó este mensaje")) %>%
+  mutate(time = as.Date(time),
+         author = as.character(author),
+         author = ifelse(author == "Da Airtel","haanuel_NG", author)) %>% 
+  select(-source)
+
+chat_data %>% 
+  slice_head(n = 5)
+```
+
+-   The `rwa_read()` function loads the chat data in R
+-   The `filter()` function removes global messages like "Se te añadió al grupo" meaning you were added to the group. Basically, messages that weren't sent by any user, just whatsapp noticifications. The second thing the `filter()` does is to remove deleted messages. "Se eliminó este mensaje" meaning, "this message was deleted" appears when a user deletes their messages.
+-   The `mutate()` function converts the datetime column to a date column.
+-   The `select()` function removes the source column, we wouldn't be using that. Finally, our chat data is ready for analysis.
+
+NOTE: My phone is in spanish, *"Se eliminó este mensaje"* would not work if your phone is set to a different language. One way to go around this is to load the data without any data wrangling steps, then take a look at the data to know the tags used.
+
+## Analysis
+
+The question I wanted to explore are as follows, feel free to go crazy here.
+
+1.  Total number of chats sent
+2.  Total number of users that has sent a message
+3.  Who sends the most messages?
+4.  What is the average word usage per chat and who has the highest?
+5.  Who chats less?
+6.  Who uses emojis 😊 the most?
+7.  What is the most used emoji?
+8.  How many times has the user with the most emoji usage used the most used emoji?
+9.  Who sends Multimedia files the most?
+10. For all messages sent by a user, how many emojis was used and who is the highest on this stat?
+
+I'll walk you through on my thought process for the first 7 questions. Feel free to try out the last three yourself and also the questions never really end. Go wild!
+
+As Julia Silge would say, Alright!!
+
+### Question 1
+
+To get the total number of chat sent, we just count the number of rows in the tibble. Since we have done the basic data cleaning in previous steps, the data only shows chats. The `prettyNum()` function simply formats the numbers. i.e, 2000 = 2,000.
+
+```{r}
+tt_mesages <- function(tbl){
+  
+  prettyNum(nrow(tbl), big.mark = ",")
+}
+
+tt_mesages(chat_data)
+```
+
+### Question 2
+
+The logic for this is quite simple.
+
+-   Get the distinct users (It would give a vector of characters)
+
+-   Get the length of the new result, that would give the number of users in that chat.
+
+```{r}
+tt_users <- function(tbl){
+  
+  prettyNum(length(unique(tbl$author)), big.mark = ",")
+}
+
+tt_users(chat_data)
+```
+
+**NOTE**: Using the tidyverse approach would have been a cleaner approach but using base R functions in shiny has some benefits. This is how you can approach this problem using the tidy approach.
+
+```{r}
+chat_data %>% 
+  distinct(author) %>% 
+  summarize(users = n()) %>% 
+  pull(users)
+```
+
+### Question 3
+
+To know who sends the most messages, we just count the number of messages sent by each user and select the highest score.
+
+```{r}
+tt_active_user <- function(tbl){
+  
+  tbl %>%
+    count(author) %>%
+    slice_max(order_by = n, n = 1, with_ties = FALSE) %>% 
+    mutate(author = as.character(author) %>% 
+             str_wrap(width = 10),
+           n = prettyNum(n, big.mark = ","))
+  
+}
+
+tt_active_user(chat_data) 
+```
+
+**NOTE**: the *with_ties = FALSE* argument in the `slice_max()` function helps so that we only have one user. For example, if two users have the same amount of messages but we only need one, this argument would only pick the first person on the tibble but setting it to true would return the two users.
+
+It seems I have sent the most messages 😂
+
+### Question 4
+
+To know who uses more words in a single message, I broke the logic into two parts. First, I took a random sample of 500 chats sent by each user then did the average count of words used by each user and selected the user with the highest score. After that, I ran a simulation to repeat the same process 20 times in a way to eliminate bias on a particular sample.
+
+The `tt_highest_avg_length()` function works like this.
+
+-   Accepts a tibble of chat data as input.
+
+-   Removes non-text chats (multimedia files/tags)
+
+-   Samples 500 chats each from every user and gets the number of characters used in every chat.
+
+-   Summarizes the data by getting the total number of messages sent and the average number of words used.
+
+-   Removes records for users that hasn't sent up to 500 messages.
+
+-   Finally, it returns the highest record.
+
+As we can see from the result below, my friend *Gerald* sends an average of \~10 words per message making him top in this metric.
+
+```{r}
+tt_highest_avg_length  <- function(tbl){
+  
+  tbl %>%
+    filter(!str_detect(text, "^<")) %>% 
+    select(author, text) %>% 
+    nest(data = c(text)) %>% 
+    mutate(sample_chats = map(data,.f = function(tbl) slice_sample(tbl, n = 500) )) %>% 
+    select(author, sample_chats) %>% 
+    unnest(sample_chats) %>% 
+    mutate(text_length = str_count(text, "\\w+")) %>% 
+    filter(!is.na(text_length)) %>% 
+    group_by(author) %>% 
+    summarize(chat_freq = n(),
+              avg_text = mean(text_length), .groups = "drop") %>% 
+    filter(chat_freq == 500) %>% 
+    slice_max(order_by = avg_text, n = 1, with_ties = FALSE) %>% 
+    mutate(author = as.character(author) %>% 
+             str_wrap(width = 10)) %>% 
+    select(-chat_freq)
+  
+}
+
+
+tt_highest_avg_length(chat_data) %>% 
+  bind_rows(tt_highest_avg_length(chat_data)) %>% 
+  bind_rows(tt_highest_avg_length(chat_data)) %>% 
+  bind_rows(tt_highest_avg_length(chat_data)) %>% 
+  bind_rows(tt_highest_avg_length(chat_data))
+```
+
+Sampling only once might not be enough, there might be some bias in our results. From the results above, Gerald appeared to have the highest score all five times, but it could be different for another data. The method I chose to solve this issue is to run a simulation and pick the highest score afterwards as the final result.
+
+The `tt_get_avg_chatter()` function works like this:
+
+-   Takes the chat data as input and creates 20 instances of it.
+
+-   For each instance of the data, it applies the `tt_highest_avg_length()` function to it.
+
+-   This would create 20 different results for the 'author' and 'avg_text'.
+
+-   It wraps up by getting the average word length for each of the authors and returns the highest score and its final output after rounding up to an integer.
+
+```{r}
+tt_get_avg_chatter <- function(tbl){
+  
+  tibble(n = 1:20) %>% 
+    mutate(data = list(tbl)) %>% 
+    mutate(sim = map(data, tt_highest_avg_length)) %>% 
+    select(sim) %>% 
+    unnest(sim) %>% 
+    count(author, wt = mean(avg_text)) %>% 
+    slice_max(order_by = n, n = 1, with_ties = F) %>% 
+    mutate(n = round(n, 0))
+}
+
+tt_get_avg_chatter(chat_data) 
+```
+
+**NOTE**: Even if the simulation returns the same user 20 times. The summarize function would just get the average of those 20 simulated results.
+
+### Question 5
+
+To know who chats less, we basically repeat the procedure for Question 3 only this time, we pick the lowest count.
+
+```{r}
+tt_least_active_user <- function(tbl){
+  
+  tbl %>%
+    count(author) %>%
+    slice_min(order_by = n, n = 1, with_ties = FALSE) %>% 
+    mutate(author = as.character(author) %>% 
+             str_wrap(width = 10),
+           n = prettyNum(n, big.mark = ","))
+  
+}
+
+tt_least_active_user(chat_data)
+```
+
+### Question 6
+
+To know who uses emojis the most, we have to unnest the emoji column of the dataset. This column has a list of all emojis used in a chat. Upon unnesting this column, we simply count the number of times each user used an emoji and select the person with the highest number as the person who uses emojis the most.
+
+```{r}
+tt_who_uses_emoji_mostly <- function(tbl){
+  
+  tbl %>% 
+    select(author, emoji) %>% 
+    unnest(emoji) %>% 
+    filter(!is.na(emoji)) %>% 
+    count(author) %>% 
+    slice_max(order_by = n, n = 1, with_ties = F) %>% 
+    mutate(author = as.character(author),
+           n = prettyNum(n, big.mark = ","))
+}
+
+tt_who_uses_emoji_mostly(chat_data) 
+
+```
+
+### Question 7
+
+Knowing which emoji was used the most is quite similar to some of the previous questions asked. Simply get the emoji data, count it and select the highest number.
+
+```{r}
+tt_extract_most_used_emoji <- function(tbl){
+  
+  chat_data %>% 
+    select(emoji) %>% 
+    unnest(emoji) %>% 
+    filter(!is.na(emoji)) %>%  
+    count(emoji, sort = TRUE) %>% 
+    slice_max(order_by = n, n = 1, with_ties = F) %>% 
+    mutate(n = prettyNum(n, big.mark = ","))
+  
+}
+```
+
+Result: `r paste(sprintf(tt_extract_most_used_emoji(chat_data)$emoji), "has been used", tt_extract_most_used_emoji(chat_data)$n, "times.")`.
+
+Thank you so much for getting up to this point, I know this post was quite long and I hope you gained some valuable content from this.
+
+In the next post, I'll walk you through on how I coupled all these functions into Shiny.
+
+See you in the next one!
+
+❤️

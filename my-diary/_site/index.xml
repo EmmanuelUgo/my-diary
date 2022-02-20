@@ -7,7 +7,19 @@
     <description>Diary of an Analyst
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 09 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 17 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Building a Chat Analyzer app - Part 2</title>
+      <dc:creator>Emmanuel Ugochukwu</dc:creator>
+      <link>https://dairy-of-an-analyst.netlify.app/posts/2022-02-18-chatanalyzer-part-1</link>
+      <description>Creating some descriptive information about our data</description>
+      <category>Text Analytics</category>
+      <category>Data Science</category>
+      <category>WhatsApp series</category>
+      <guid>https://dairy-of-an-analyst.netlify.app/posts/2022-02-18-chatanalyzer-part-1</guid>
+      <pubDate>Thu, 17 Feb 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://dairy-of-an-analyst.netlify.app/posts/2022-02-18-chatanalyzer-part-1/preview.png" medium="image" type="image/png" width="326" height="259"/>
+    </item>
     <item>
       <title>Vroom vs Readr</title>
       <dc:creator>Emmanuel Ugochukwu</dc:creator>
@@ -17,7 +29,7 @@
       <category>readr</category>
       <category>vroom</category>
       <guid>https://dairy-of-an-analyst.netlify.app/posts/2022-02-10-vroom-vs-readr</guid>
-      <pubDate>Wed, 09 Feb 2022 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 10 Feb 2022 00:00:00 +0000</pubDate>
       <media:content url="https://dairy-of-an-analyst.netlify.app/posts/2022-02-10-vroom-vs-readr/distill-preview.png" medium="image" type="image/png" width="1248" height="768"/>
     </item>
     <item>
@@ -28,6 +40,7 @@
       <category>NLP</category>
       <category>Shiny</category>
       <category>Text Analytics</category>
+      <category>WhatsApp series</category>
       <guid>https://dairy-of-an-analyst.netlify.app/posts/2022-02-07-my-first-post</guid>
       <pubDate>Mon, 07 Feb 2022 00:00:00 +0000</pubDate>
       <media:content url="https://dairy-of-an-analyst.netlify.app/posts/2022-02-07-my-first-post/text-analytics.png" medium="image" type="image/png" width="646" height="569"/>
