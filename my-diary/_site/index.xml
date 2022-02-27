@@ -7,7 +7,19 @@
     <description>Diary of an Analyst
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Thu, 17 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 26 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Organize your Workflow with {targets}</title>
+      <dc:creator>Emmanuel Ugochukwu</dc:creator>
+      <link>https://dairy-of-an-analyst.netlify.app/posts/2022-02-25-organize-your-workflow-with-targets</link>
+      <description>An introduction to the {targets} package.</description>
+      <category>Targets</category>
+      <category>Data Science</category>
+      <category>R-senal</category>
+      <guid>https://dairy-of-an-analyst.netlify.app/posts/2022-02-25-organize-your-workflow-with-targets</guid>
+      <pubDate>Sat, 26 Feb 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://dairy-of-an-analyst.netlify.app/posts/2022-02-25-organize-your-workflow-with-targets/preview.png" medium="image" type="image/png" width="500" height="577"/>
+    </item>
     <item>
       <title>Building a Chat Analyzer app - Part 2</title>
       <dc:creator>Emmanuel Ugochukwu</dc:creator>
@@ -17,7 +29,7 @@
       <category>Data Science</category>
       <category>WhatsApp series</category>
       <guid>https://dairy-of-an-analyst.netlify.app/posts/2022-02-18-chatanalyzer-part-1</guid>
-      <pubDate>Thu, 17 Feb 2022 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
       <media:content url="https://dairy-of-an-analyst.netlify.app/posts/2022-02-18-chatanalyzer-part-1/preview.png" medium="image" type="image/png" width="326" height="259"/>
     </item>
     <item>

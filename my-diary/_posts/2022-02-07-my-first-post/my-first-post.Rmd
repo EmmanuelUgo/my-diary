@@ -5,7 +5,7 @@ description: |
 author:
   - name: Emmanuel Ugochukwu
     url: https://github.com/emmanuelugo
-base_url: https://dairy-of-an-analyst.netlify.app/
+base_url: https://diary-of-an-analyst.netlify.app/
 date: 02-07-2022
 preview: text-analytics.png
 output: 
